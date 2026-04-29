@@ -5,6 +5,7 @@ import com.sanosysalvos.contracts.MatchCandidate
 import com.sanosysalvos.contracts.MatchEvaluationRequest
 import com.sanosysalvos.contracts.MatchEvaluationResponse
 import com.sanosysalvos.contracts.MatchNotificationRequest
+import com.sanosysalvos.match.client.XanoMatchClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/matches")
-class MatchHealthController {
+class MatchHealthController(
+    private val xanoMatchClient: XanoMatchClient,
+) {
 
     @GetMapping("/health")
     fun health(): Map<String, String> = mapOf(
@@ -21,18 +24,20 @@ class MatchHealthController {
         "status" to "up",
     )
 
+    @GetMapping("/pending")
+    fun pending(): ApiEnvelope<List<MatchCandidate>> = ApiEnvelope(
+        success = true,
+        message = "Pending matches loaded from XANO",
+        data = xanoMatchClient.pending(),
+    )
+
     @PostMapping("/evaluate")
     fun evaluate(@RequestBody request: MatchEvaluationRequest): ApiEnvelope<MatchEvaluationResponse> {
-        val candidate = MatchCandidate(
-            reportId = request.lostReportId,
-            matchedReportId = request.foundReportId,
-            score = 0.82,
-            reason = "High similarity by color, size and distance",
-        )
+        val candidate = xanoMatchClient.evaluate(request)
 
         return ApiEnvelope(
             success = true,
-            message = "Match evaluated",
+            message = "Match evaluated in XANO",
             data = MatchEvaluationResponse(
                 candidate = candidate,
                 shouldNotify = true,
@@ -43,7 +48,7 @@ class MatchHealthController {
     @PostMapping("/notify")
     fun notifyMatch(@RequestBody request: MatchNotificationRequest): ApiEnvelope<String> = ApiEnvelope(
         success = true,
-        message = "Match notification dispatched",
-        data = request.userId,
+        message = "Match notification dispatched through XANO",
+        data = xanoMatchClient.notify(request),
     )
 }

@@ -11,6 +11,7 @@ Construir un backend en Kotlin orientado a microservicios para una app tipo Goog
 - Arquitectura de microservicios con un BFF como punto de entrada para el frontend.
 - Separación por dominio para facilitar escalabilidad y mantenimiento.
 - Uso de proveedores abiertos o gratuitos para mapas, geocodificación y rutas.
+- Persistencia y CRUD delegados a XANO para usuarios, mascotas, reportes, coincidencias y colaboradores.
 
 ## Servicios propuestos
 ### BFF Service
@@ -46,6 +47,7 @@ Utilidades transversales, manejo de errores, logging y helpers reutilizables.
 - `geoservice` publica configuración de tiles, capas de mapa, reportes cercanos y enlace de navegación visual.
 - `bff-service` expone esos endpoints como fachada para el frontend.
 - Geocodificación, rutas calculadas, coincidencias avanzadas, notificaciones externas y gestión de fotos quedan para fases siguientes.
+- XANO aporta la capa de datos para users, pets, reports, matches y collaborators.
 
 ## Flujo de alto nivel
 1. El frontend llama al BFF.
@@ -66,6 +68,5 @@ Utilidades transversales, manejo de errores, logging y helpers reutilizables.
 ## Siguientes pasos sugeridos
 - Crear el Gradle multi-módulo.
 - Definir los contratos entre servicios.
-- Elegir la estrategia de persistencia por servicio.
 - Integrar un proveedor de mapas gratuito como primera capa funcional.
-- Definir la autenticación centralizada para el BFF y los servicios internos.
+- Ajustar los clientes XANO y las credenciales de despliegue por entorno.

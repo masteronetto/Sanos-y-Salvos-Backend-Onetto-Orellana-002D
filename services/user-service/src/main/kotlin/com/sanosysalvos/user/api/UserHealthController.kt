@@ -6,6 +6,7 @@ import com.sanosysalvos.contracts.DeviceTokenRequest
 import com.sanosysalvos.contracts.UserLoginRequest
 import com.sanosysalvos.contracts.UserRegistrationRequest
 import com.sanosysalvos.contracts.UserRole
+import com.sanosysalvos.user.client.XanoUserClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/users")
-class UserHealthController {
+class UserHealthController(
+    private val xanoUserClient: XanoUserClient,
+) {
 
     @GetMapping("/health")
     fun health(): Map<String, String> = mapOf(
@@ -24,26 +27,34 @@ class UserHealthController {
         "status" to "up",
     )
 
+    @GetMapping("/list")
+    fun listUsers(): ApiEnvelope<List<XanoUserClient.UserRecord>> = ApiEnvelope(
+        success = true,
+        message = "User list loaded from XANO",
+        data = xanoUserClient.listUsers(),
+    )
+
+    @GetMapping("/{userId}")
+    fun getById(
+        @PathVariable userId: String,
+    ): ApiEnvelope<XanoUserClient.UserRecord> = ApiEnvelope(
+        success = true,
+        message = "User loaded from XANO",
+        data = xanoUserClient.getById(userId),
+    )
+
     @PostMapping("/register")
     fun register(@RequestBody request: UserRegistrationRequest): ApiEnvelope<AuthResponse> = ApiEnvelope(
         success = true,
-        message = "User registered",
-        data = AuthResponse(
-            userId = request.email,
-            role = UserRole.USER,
-            token = "token-user-${request.email}",
-        ),
+        message = "User registered in XANO",
+        data = xanoUserClient.register(request),
     )
 
     @PostMapping("/login")
     fun login(@RequestBody request: UserLoginRequest): ApiEnvelope<AuthResponse> = ApiEnvelope(
         success = true,
-        message = "User authenticated",
-        data = AuthResponse(
-            userId = request.email,
-            role = UserRole.USER,
-            token = "token-user-${request.email}",
-        ),
+        message = "User authenticated in XANO",
+        data = xanoUserClient.login(request),
     )
 
     @PutMapping("/{userId}/role/{role}")
@@ -52,14 +63,14 @@ class UserHealthController {
         @PathVariable role: UserRole,
     ): ApiEnvelope<String> = ApiEnvelope(
         success = true,
-        message = "Role $role assigned",
-        data = userId,
+        message = "Role $role assigned in XANO",
+        data = xanoUserClient.assignRole(userId, role).id,
     )
 
     @PostMapping("/device-token")
-    fun registerDeviceToken(@RequestBody request: DeviceTokenRequest): ApiEnvelope<DeviceTokenRequest> = ApiEnvelope(
+    fun registerDeviceToken(@RequestBody request: DeviceTokenRequest): ApiEnvelope<XanoUserClient.UserRecord> = ApiEnvelope(
         success = true,
-        message = "Device token stored",
-        data = request,
+        message = "Device token stored in XANO",
+        data = xanoUserClient.registerDeviceToken(request),
     )
 }
