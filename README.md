@@ -248,6 +248,61 @@ export GEOSERVICE_BASE_URL=http://localhost:8083
 - [Mapeo de módulos](docs/module-map.md)
 - [Integración OSM](docs/openstreetmap-integration.md)
 - [OpenAPI Xano](docs/xano-openapi.json)
+
+## Stack Tecnológico
+
+### Backend
+- **Lenguaje:** Kotlin 2.0.21
+- **Framework:** Spring Boot 3.3.5
+- **DB:** PostgreSQL 16 (via Docker)
+- **Mensajería:** RabbitMQ (via Docker)
+- **Build:** Gradle 8.0 multi-módulo
+- **Java:** OpenJDK 21
+
+### Frontend (próximamente)
+- **Framework UI:** Jetpack Compose
+- **HTTP:** Retrofit 2 + OkHttp
+- **Mapas:** OpenStreetMap (osmdroid)
+- **Async:** Kotlin Coroutines
+- **DI:** Hilt
+
+### APIs Externas (Gratuitas)
+- OpenStreetMap: Cartografía base, tiles
+- Nominatim: Geocodificación
+- OSRM: Cálculo de rutas
+- Overpass API: Datos geoespaciales
+
+## Estado del Proyecto
+
+✅ **Completado:**
+- Estructura base de microservicios Kotlin/Spring Boot
+- DTOs compartidas en `shared/contracts`
+- Endpoints stubs para auth, usuarios, mascotas, reportes, coincidencias
+- OpenStreetMap integrado en GeoService
+- BFF como fachada única
+- Especificación OpenAPI consolidada (desde Xano)
+
+🔄 **En desarrollo (próximos pasos después de subir rama):**
+- Sincronización de endpoints BFF con especificación Xano
+- Persistencia real (JPA + PostgreSQL)
+- Autenticación JWT funcional
+- Validación de compilación Gradle
+
+⏳ **Futuro:**
+- Cliente Android (Jetpack Compose)
+- Tests e2e
+- Notificaciones push
+- Documentación interactiva de API
+- CI/CD (GitHub Actions)
+
+## Contribuir
+
+1. Crea una rama desde `main`
+2. Implementa cambios
+3. Sube la rama: `git push origin feature/nombre`
+4. Abre un Pull Request
+
+Para cambios en endpoints o DTOs, sincroniza también `shared/contracts`.
 - `geoservice`: geolocalización, reportes cercanos y soporte para mapa interactivo.
 - `match-service`: motor de coincidencias y disparo de notificaciones de coincidencia.
 - `bff-service`: agregación y adaptación de datos para el frontend.
