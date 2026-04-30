@@ -46,6 +46,71 @@ class UserHealthController {
         ),
     )
 
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: String): ApiEnvelope<UserProfile> = ApiEnvelope(
+        success = true,
+        message = "User found",
+        data = UserProfile(
+            id = id,
+            fullName = "Demo User",
+            email = "$id",
+            phone = null,
+            role = UserRole.USER,
+        ),
+    )
+
+    @GetMapping("/list")
+    fun listUsers(): ApiEnvelope<List<UserProfile>> = ApiEnvelope(
+        success = true,
+        message = "User list",
+        data = listOf(
+            UserProfile(id = "user1", fullName = "Demo One", email = "one@example.com"),
+            UserProfile(id = "user2", fullName = "Demo Two", email = "two@example.com"),
+        ),
+    )
+
+    @GetMapping("/me")
+    fun me(): ApiEnvelope<UserProfile> = ApiEnvelope(
+        success = true,
+        message = "Current user",
+        data = UserProfile(id = "me", fullName = "Current User", email = "me@example.com"),
+    )
+
+    @PostMapping("/reset/request-reset-link")
+    fun requestResetLink(@RequestBody body: Map<String, String>): ApiEnvelope<String> = ApiEnvelope(
+        success = true,
+        message = "Reset link requested",
+        data = body["email"],
+    )
+
+    @PostMapping("/reset/update_password")
+    fun updatePassword(@RequestBody body: Map<String, String>): ApiEnvelope<String> = ApiEnvelope(
+        success = true,
+        message = "Password updated",
+        data = body["userId"],
+    )
+
+    @PostMapping("/reset/magic-link-login")
+    fun magicLinkLogin(@RequestBody body: Map<String, String>): ApiEnvelope<AuthResponse> = ApiEnvelope(
+        success = true,
+        message = "Magic link login",
+        data = AuthResponse(userId = body["userId"] ?: "", role = UserRole.USER, token = "token-magic"),
+    )
+
+    @PostMapping("/message/send_welcome_email")
+    fun sendWelcomeEmail(@RequestBody body: Map<String, String>): ApiEnvelope<String> = ApiEnvelope(
+        success = true,
+        message = "Welcome email queued",
+        data = body["email"],
+    )
+
+    @GetMapping("/logs/my_events")
+    fun myEvents(): ApiEnvelope<List<String>> = ApiEnvelope(
+        success = true,
+        message = "User events",
+        data = listOf("login", "register"),
+    )
+
     @PutMapping("/{userId}/role/{role}")
     fun assignRole(
         @PathVariable userId: String,

@@ -28,3 +28,11 @@ data class DeviceTokenRequest(
     val userId: String,
     val deviceToken: String,
 )
+
+data class UserProfile(
+    val id: String,
+    val fullName: String,
+    val email: String,
+    val phone: String? = null,
+    val role: UserRole = UserRole.USER,
+)
