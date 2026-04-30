@@ -51,4 +51,18 @@ class MatchHealthController(
         message = "Match notification dispatched through XANO",
         data = xanoMatchClient.notify(request),
     )
+
+    @GetMapping("/pending")
+    fun pending(): ApiEnvelope<List<MatchCandidate>> = ApiEnvelope(
+        success = true,
+        message = "Pending matches",
+        data = emptyList(),
+    )
+
+    @PostMapping("/webhooks/match-notification")
+    fun webhookMatchNotification(@RequestBody payload: Map<String, Any>): ApiEnvelope<String> = ApiEnvelope(
+        success = true,
+        message = "Webhook received",
+        data = payload["matchId"]?.toString() ?: "",
+    )
 }
