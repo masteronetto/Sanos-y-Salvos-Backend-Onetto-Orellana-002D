@@ -36,3 +36,11 @@ data class UserProfile(
     val phone: String? = null,
     val role: UserRole = UserRole.USER,
 )
+
+data class UserUpdateRequest(
+    val fullName: String,
+    val email: String,
+    val phone: String? = null,
+    val password: String? = null,
+    val role: UserRole? = null,
+)

@@ -1,10 +1,10 @@
 # Backend - Sanos y Salvos
 
-Backend de "Sanos y Salvos", aplicación para la gestión de mascotas perdidas y encontradas. Este repositorio contiene la capa backend, lógica de microservicios **y el código fuente del frontend Android** en un monorepo integrado.
+Backend de "Sanos y Salvos", aplicación para la gestión de mascotas perdidas y encontradas. Este repositorio contiene la capa backend, lógica de microservicios y queda preparado para alojar también el frontend Android dentro del mismo monorepo.
 
 **Stack técnico:**
 - **Backend:** Kotlin, Spring Boot 3.3.5, PostgreSQL, RabbitMQ
-- **Frontend:** Android (Jetpack Compose), Retrofit, OpenStreetMap
+- **Frontend previsto:** Android (Jetpack Compose), Retrofit, OpenStreetMap
 - **Mapas:** OpenStreetMap (gratuito, sin costos de licencia)
 - **Arquitectura:** Microservicios con BFF como punto de entrada único
 
