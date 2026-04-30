@@ -27,6 +27,13 @@ class MatchHealthController(
         "status" to "up",
     )
 
+    @GetMapping("/pending")
+    fun pending(): ApiEnvelope<List<MatchCandidate>> = ApiEnvelope(
+        success = true,
+        message = "Pending matches loaded from XANO",
+        data = xanoMatchClient.pending(),
+    )
+
     @PostMapping("/evaluate")
     fun evaluate(@RequestBody request: MatchEvaluationRequest): ApiEnvelope<MatchEvaluationResponse> {
         return ApiEnvelope(

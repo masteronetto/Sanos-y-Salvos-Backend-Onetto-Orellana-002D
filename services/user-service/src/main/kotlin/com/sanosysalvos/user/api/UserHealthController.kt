@@ -23,6 +23,22 @@ class UserHealthController(
         "status" to "up",
     )
 
+    @GetMapping("/list")
+    fun listUsers(): ApiEnvelope<List<XanoUserClient.UserRecord>> = ApiEnvelope(
+        success = true,
+        message = "User list loaded from XANO",
+        data = xanoUserClient.listUsers(),
+    )
+
+    @GetMapping("/{userId}")
+    fun getById(
+        @PathVariable userId: String,
+    ): ApiEnvelope<XanoUserClient.UserRecord> = ApiEnvelope(
+        success = true,
+        message = "User loaded from XANO",
+        data = xanoUserClient.getById(userId),
+    )
+
     @PostMapping("/register")
     fun register(@RequestBody request: UserRegistrationRequest): ApiEnvelope<AuthResponse> = ApiEnvelope(
         success = true,

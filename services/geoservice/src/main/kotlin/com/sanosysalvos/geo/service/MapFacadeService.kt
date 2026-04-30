@@ -3,6 +3,7 @@ package com.sanosysalvos.geo.service
 import com.sanosysalvos.contracts.MapLayer
 import com.sanosysalvos.contracts.NavigationLinkResponse
 import com.sanosysalvos.contracts.NearbyReportsResponse
+import com.sanosysalvos.contracts.ReportSummary
 import com.sanosysalvos.contracts.ReportType
 import com.sanosysalvos.contracts.TileProviderConfig
 import com.sanosysalvos.geo.client.XanoGeoClient
