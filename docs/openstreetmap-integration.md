@@ -47,5 +47,5 @@ El frontend debe consumir estos endpoints del BFF en lugar de llamar directament
 
 ## Notas de implementacion
 - La capa de reportes cercanos en esta fase usa datos semilla para habilitar la visualizacion y el flujo de frontend.
-- En la siguiente fase, `reports/nearby` debe leer reportes reales desde `pet-service` y/o PostgreSQL geoespacial.
+- En la siguiente fase, `reports/nearby` debe seguir leyendo reportes reales desde XANO a través de `pet-service` y `geoservice`.
 - Esta fase no incorpora aun geocodificacion, rutas calculadas, motor de coincidencias, notificaciones ni gestion de fotos.

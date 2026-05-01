@@ -1,10 +1,20 @@
 spring:
   application:
     name: user-service
+<<<<<<< HEAD
 
 clients:
   xano-auth:
     base-url: ${XANO_AUTH_BASE_URL:https://x8ki-letl-twmt.n7.xano.io/api:sanos-y-salvos-auth}
+=======
+  web:
+    resources:
+      add-mappings: false
+>>>>>>> 712159b534663c6c426d504447afde74e7da85dd
 
 server:
   port: 8081
+
+xano:
+  api:
+    baseUrl: https://x8ki-letl-twmt.n7.xano.io

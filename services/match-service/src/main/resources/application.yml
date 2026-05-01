@@ -1,18 +1,13 @@
 spring:
   application:
     name: match-service
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/sanosysalvos}
-    username: ${DB_USERNAME:sanos}
-    password: ${DB_PASSWORD:sanos123}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  web:
+    resources:
+      add-mappings: false
 
 server:
   port: 8084
+
+xano:
+  api:
+    baseUrl: https://x8ki-letl-twmt.n7.xano.io
