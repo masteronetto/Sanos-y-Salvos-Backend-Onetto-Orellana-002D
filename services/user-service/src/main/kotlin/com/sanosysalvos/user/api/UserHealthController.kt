@@ -6,6 +6,7 @@ import com.sanosysalvos.contracts.DeviceTokenRequest
 import com.sanosysalvos.contracts.UserLoginRequest
 import com.sanosysalvos.contracts.UserRegistrationRequest
 import com.sanosysalvos.contracts.UserRole
+import com.sanosysalvos.user.client.XanoAuthClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/users")
-class UserHealthController {
+class UserHealthController(
+    private val xanoAuthClient: XanoAuthClient,
+) {
 
     @GetMapping("/health")
     fun health(): Map<String, String> = mapOf(
@@ -25,26 +28,36 @@ class UserHealthController {
     )
 
     @PostMapping("/register")
-    fun register(@RequestBody request: UserRegistrationRequest): ApiEnvelope<AuthResponse> = ApiEnvelope(
-        success = true,
-        message = "User registered",
-        data = AuthResponse(
-            userId = request.email,
-            role = UserRole.USER,
-            token = "token-user-${request.email}",
-        ),
-    )
+    fun register(@RequestBody request: UserRegistrationRequest): ApiEnvelope<AuthResponse> = try {
+        val authResponse = xanoAuthClient.register(request)
+        ApiEnvelope(
+            success = true,
+            message = "User registered",
+            data = authResponse,
+        )
+    } catch (e: Exception) {
+        ApiEnvelope(
+            success = false,
+            message = "Registration failed: ${e.message}",
+            data = null,
+        )
+    }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: UserLoginRequest): ApiEnvelope<AuthResponse> = ApiEnvelope(
-        success = true,
-        message = "User authenticated",
-        data = AuthResponse(
-            userId = request.email,
-            role = UserRole.USER,
-            token = "token-user-${request.email}",
-        ),
-    )
+    fun login(@RequestBody request: UserLoginRequest): ApiEnvelope<AuthResponse> = try {
+        val authResponse = xanoAuthClient.login(request)
+        ApiEnvelope(
+            success = true,
+            message = "User authenticated",
+            data = authResponse,
+        )
+    } catch (e: Exception) {
+        ApiEnvelope(
+            success = false,
+            message = "Authentication failed: ${e.message}",
+            data = null,
+        )
+    }
 
     @PutMapping("/{userId}/role/{role}")
     fun assignRole(

@@ -1,18 +1,10 @@
 spring:
   application:
     name: user-service
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/sanosysalvos}
-    username: ${DB_USERNAME:sanos}
-    password: ${DB_PASSWORD:sanos123}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+clients:
+  xano-auth:
+    base-url: ${XANO_AUTH_BASE_URL:https://x8ki-letl-twmt.n7.xano.io/api:sanos-y-salvos-auth}
 
 server:
   port: 8081
