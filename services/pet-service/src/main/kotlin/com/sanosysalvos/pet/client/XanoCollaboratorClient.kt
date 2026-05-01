@@ -10,7 +10,7 @@ import org.springframework.web.client.RestClient
 @Component
 class XanoCollaboratorClient(
     restClientBuilder: RestClient.Builder,
-    @Value("\${xano.base-url}") baseUrl: String,
+    @Value("\${xano.base-url:\${xano.api.baseUrl:https://x8ki-letl-twmt.n7.xano.io}}") baseUrl: String,
     @Value("\${xano.api-key:}") private val apiKey: String,
 ) {
     private val restClient: RestClient = restClientBuilder

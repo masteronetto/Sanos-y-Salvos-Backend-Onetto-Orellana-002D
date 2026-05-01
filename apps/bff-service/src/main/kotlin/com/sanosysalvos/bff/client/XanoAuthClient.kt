@@ -5,6 +5,7 @@ import com.sanosysalvos.contracts.AuthResponse
 import com.sanosysalvos.contracts.UserLoginRequest
 import com.sanosysalvos.contracts.UserRegistrationRequest
 import com.sanosysalvos.contracts.UserRole
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import java.util.UUID
@@ -23,7 +24,7 @@ class XanoAuthClient(
             .uri("/login")
             .body(request)
             .retrieve()
-            .body(object : LinkedHashMap<String, Any>() {})
+            .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
             ?: error("Xano login response was empty")
 
         return mapToAuthResponse(response)
@@ -41,7 +42,7 @@ class XanoAuthClient(
             .uri("/register")
             .body(xanoRequest)
             .retrieve()
-            .body(object : LinkedHashMap<String, Any>() {})
+            .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
             ?: error("Xano register response was empty")
 
         return mapToAuthResponse(response)
@@ -53,7 +54,7 @@ class XanoAuthClient(
                 .uri("/logout")
                 .header("Authorization", "Bearer $token")
                 .retrieve()
-                .body(object : LinkedHashMap<String, Any>() {})
+                .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
             true
         } catch (e: Exception) {
             false
@@ -65,7 +66,7 @@ class XanoAuthClient(
             .uri("/me")
             .header("Authorization", "Bearer $token")
             .retrieve()
-            .body(object : LinkedHashMap<String, Any>() {})
+            .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
             ?: error("Xano me response was empty")
     }
 
@@ -74,7 +75,7 @@ class XanoAuthClient(
             .uri("/refresh")
             .header("Authorization", "Bearer $token")
             .retrieve()
-            .body(object : LinkedHashMap<String, Any>() {})
+            .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
             ?: error("Xano refresh response was empty")
 
         return mapToAuthResponse(response)

@@ -30,8 +30,8 @@ class MatchHealthController(
     @GetMapping("/pending")
     fun pending(): ApiEnvelope<List<MatchCandidate>> = ApiEnvelope(
         success = true,
-        message = "Pending matches loaded from XANO",
-        data = xanoMatchClient.pending(),
+        message = "Pending matches",
+        data = matchService.pending(),
     )
 
     @PostMapping("/evaluate")
@@ -48,13 +48,6 @@ class MatchHealthController(
         success = true,
         message = "Match notification dispatched",
         data = matchService.notifyMatch(request),
-    )
-
-    @GetMapping("/pending")
-    fun pending(): ApiEnvelope<List<MatchCandidate>> = ApiEnvelope(
-        success = true,
-        message = "Pending matches",
-        data = matchService.pending(),
     )
 
     @GetMapping("", "/list")

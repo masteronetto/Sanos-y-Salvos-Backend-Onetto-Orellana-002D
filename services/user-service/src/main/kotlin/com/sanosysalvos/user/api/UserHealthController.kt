@@ -39,22 +39,6 @@ class UserHealthController(
         )
     }
 
-    @PostMapping("/register")
-    fun register(@RequestBody request: UserRegistrationRequest): ApiEnvelope<AuthResponse> = try {
-        val authResponse = xanoAuthClient.register(request)
-        ApiEnvelope(
-            success = true,
-            message = "User registered",
-            data = authResponse,
-        )
-    } catch (e: Exception) {
-        ApiEnvelope(
-            success = false,
-            message = "Registration failed: ${e.message}",
-            data = null,
-        )
-    }
-
     @PostMapping("/login")
     fun login(@RequestBody request: UserLoginRequest): ApiEnvelope<AuthResponse> = try {
         val authResponse = xanoAuthClient.login(request)
@@ -70,54 +54,8 @@ class UserHealthController(
             data = null,
         )
     }
-
-    @PostMapping("/register")
-<<<<<<< HEAD
-    fun register(@RequestBody request: UserRegistrationRequest): ApiEnvelope<AuthResponse> = try {
-        val authResponse = xanoAuthClient.register(request)
-        ApiEnvelope(
-            success = true,
-            message = "User registered",
-            data = authResponse,
-        )
-    } catch (e: Exception) {
-        ApiEnvelope(
-            success = false,
-            message = "Registration failed: ${e.message}",
-            data = null,
-        )
-    }
-=======
-    fun register(@RequestBody request: UserRegistrationRequest): ApiEnvelope<AuthResponse> = ApiEnvelope(
-        success = true,
-        message = "User registered",
-        data = userAccountService.register(request),
-    )
->>>>>>> 712159b534663c6c426d504447afde74e7da85dd
-
-
-    @PostMapping("/login")
-<<<<<<< HEAD
-    fun login(@RequestBody request: UserLoginRequest): ApiEnvelope<AuthResponse> = try {
-        val authResponse = xanoAuthClient.login(request)
-        ApiEnvelope(
-            success = true,
-            message = "User authenticated",
-            data = authResponse,
-        )
-    } catch (e: Exception) {
-        ApiEnvelope(
-            success = false,
-            message = "Authentication failed: ${e.message}",
-            data = null,
-        )
-    }
-=======
-    fun login(@RequestBody request: UserLoginRequest): ApiEnvelope<AuthResponse> = ApiEnvelope(
-        success = true,
-        message = "User authenticated",
-        data = userAccountService.login(request),
-    )
->>>>>>> 712159b534663c6c426d504447afde74e7da85dd
 
 }
+
+
+
