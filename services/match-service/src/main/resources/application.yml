@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: match-service
+  web:
+    resources:
+      add-mappings: false
+
+server:
+  port: 8084
+
+xano:
+  api:
+    baseUrl: https://x8ki-letl-twmt.n7.xano.io

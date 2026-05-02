@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: pet-service
+  web:
+    resources:
+      add-mappings: false
+
+server:
+  port: 8082
+
+xano:
+  base-url: https://x8ki-letl-twmt.n7.xano.io
+  api:
+    baseUrl: https://x8ki-letl-twmt.n7.xano.io

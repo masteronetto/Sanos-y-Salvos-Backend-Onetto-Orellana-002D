@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: geoservice
+
+server:
+  port: 8083
+
+xano:
+  api:
+    baseUrl: ${XANO_API_BASE_URL:https://x8ki-letl-twmt.n7.xano.io}
+
+geo:
+  osm:
+    tile-url-template: ${OSM_TILE_URL_TEMPLATE:https://tile.openstreetmap.org/{z}/{x}/{y}.png}
+    attribution: ${OSM_ATTRIBUTION:© OpenStreetMap contributors}
+    terms-url: ${OSM_TERMS_URL:https://www.openstreetmap.org/copyright}

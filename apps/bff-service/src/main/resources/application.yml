@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: bff-service
+
+clients:
+  geoservice:
+    base-url: ${GEOSERVICE_BASE_URL:http://localhost:8083}
+  xano-auth:
+    base-url: ${XANO_AUTH_BASE_URL:https://x8ki-letl-twmt.n7.xano.io/api:sanos-y-salvos-auth}
+
+server:
+  port: 8080

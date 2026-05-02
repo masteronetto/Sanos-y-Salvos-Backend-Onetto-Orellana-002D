@@ -1,0 +1,408 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sanos y Salvos API - Xano Export",
+    "version": "1.1.0",
+    "description": "API specification consolidated from the Xano Swagger links shared by the user"
+  },
+  "servers": [
+    {
+      "url": "https://x8ki-letl-twmt.n7.xano.io",
+      "description": "Xano Production"
+    }
+  ],
+  "tags": [
+    { "name": "Maps" },
+    { "name": "Auth" },
+    { "name": "Users" },
+    { "name": "Pets" },
+    { "name": "Reports" },
+    { "name": "Matches" },
+    { "name": "Collaborators" },
+    { "name": "Webhooks" },
+    { "name": "Logs" }
+  ],
+  "paths": {
+    "/api:maps/layers": {
+      "get": {
+        "summary": "Get available map layers",
+        "tags": ["Maps"],
+        "responses": { "200": { "description": "Layers list" } }
+      }
+    },
+    "/api:maps/navigation/link": {
+      "get": {
+        "summary": "Get external navigation links for a specific report",
+        "tags": ["Maps"],
+        "responses": { "200": { "description": "Navigation link" } }
+      }
+    },
+    "/api:maps/provider": {
+      "get": {
+        "summary": "Get map provider information",
+        "tags": ["Maps"],
+        "responses": { "200": { "description": "Map provider information" } }
+      }
+    },
+    "/api:maps/reports/nearby": {
+      "get": {
+        "summary": "Search for reports near a specific location",
+        "tags": ["Maps"],
+        "parameters": [
+          { "name": "latitude", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "longitude", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "radiusMeters", "in": "query", "required": false, "schema": { "type": "integer", "default": 3000 } },
+          { "name": "reportType", "in": "query", "required": false, "schema": { "type": "string", "enum": ["LOST", "FOUND"] } }
+        ],
+        "responses": { "200": { "description": "Nearby reports" } }
+      }
+    },
+    "/api:sanos-y-salvos-auth/login": {
+      "post": {
+        "summary": "Login to the application",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Login successful" } }
+      }
+    },
+    "/api:sanos-y-salvos-auth/logout": {
+      "post": {
+        "summary": "Invalidate session/token",
+        "tags": ["Auth"],
+        "responses": { "200": { "description": "Logout successful" } }
+      }
+    },
+    "/api:sanos-y-salvos-auth/me": {
+      "get": {
+        "summary": "Get the user record belonging to the authentication token",
+        "tags": ["Auth"],
+        "responses": { "200": { "description": "Current user" } }
+      }
+    },
+    "/api:sanos-y-salvos-auth/refresh": {
+      "post": {
+        "summary": "Refresh authentication token",
+        "tags": ["Auth"],
+        "responses": { "200": { "description": "New token" } }
+      }
+    },
+    "/api:sanos-y-salvos-auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" },
+                  "phone": { "type": "string" }
+                },
+                "required": ["fullName", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Registration successful" } }
+      }
+    },
+    "/api:cpJIPhgX/logs/user/my_events": {
+      "get": {
+        "summary": "Pull all event logs for the authenticated user",
+        "tags": ["Logs"],
+        "responses": { "200": { "description": "Event logs" } }
+      }
+    },
+    "/api:sanos-y-salvos-users/create": {
+      "post": {
+        "summary": "Create a new user (Admin only)",
+        "tags": ["Users"],
+        "responses": { "200": { "description": "Created user" } }
+      }
+    },
+    "/api:sanos-y-salvos-users/delete/{id}": {
+      "delete": {
+        "summary": "Delete user account",
+        "tags": ["Users"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Deleted user" } }
+      }
+    },
+    "/api:sanos-y-salvos-users/get_by_id/{id}": {
+      "get": {
+        "summary": "Get user by ID",
+        "tags": ["Users"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "User profile" } }
+      }
+    },
+    "/api:sanos-y-salvos-users/list": {
+      "get": {
+        "summary": "Get all users",
+        "tags": ["Users"],
+        "responses": { "200": { "description": "Users list" } }
+      }
+    },
+    "/api:sanos-y-salvos-users/update/{id}": {
+      "put": {
+        "summary": "Update user profile",
+        "tags": ["Users"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Updated user" } }
+      }
+    },
+    "/api:sanos-y-salvos-pets/create": {
+      "post": {
+        "summary": "Create a new pet",
+        "tags": ["Pets"],
+        "responses": { "200": { "description": "Created pet" } }
+      }
+    },
+    "/api:sanos-y-salvos-pets/delete/{id}": {
+      "delete": {
+        "summary": "Delete a pet",
+        "tags": ["Pets"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Deleted pet" } }
+      }
+    },
+    "/api:sanos-y-salvos-pets/details/{id}": {
+      "get": {
+        "summary": "Get pet details",
+        "tags": ["Pets"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Pet details" } }
+      }
+    },
+    "/api:sanos-y-salvos-pets/list": {
+      "get": {
+        "summary": "List all pets",
+        "tags": ["Pets"],
+        "responses": { "200": { "description": "Pets list" } }
+      }
+    },
+    "/api:sanos-y-salvos-pets/list_by_owner/{ownerId}": {
+      "get": {
+        "summary": "List pets by owner ID",
+        "tags": ["Pets"],
+        "parameters": [
+          { "name": "ownerId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Pets by owner" } }
+      }
+    },
+    "/api:sanos-y-salvos-pets/update/{id}": {
+      "put": {
+        "summary": "Update pet information",
+        "tags": ["Pets"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Updated pet" } }
+      }
+    },
+    "/api:sanos-y-salvos-reports/create": {
+      "post": {
+        "summary": "Create a new report (LOST or FOUND)",
+        "tags": ["Reports"],
+        "responses": { "200": { "description": "Created report" } }
+      }
+    },
+    "/api:sanos-y-salvos-reports/delete/{id}": {
+      "delete": {
+        "summary": "Delete a report",
+        "tags": ["Reports"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Deleted report" } }
+      }
+    },
+    "/api:sanos-y-salvos-reports/details/{id}": {
+      "get": {
+        "summary": "Get report details",
+        "tags": ["Reports"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Report details" } }
+      }
+    },
+    "/api:sanos-y-salvos-reports/list": {
+      "get": {
+        "summary": "List all reports with filters",
+        "tags": ["Reports"],
+        "responses": { "200": { "description": "Reports list" } }
+      }
+    },
+    "/api:sanos-y-salvos-reports/my_reports": {
+      "get": {
+        "summary": "List reports of the current user",
+        "tags": ["Reports"],
+        "responses": { "200": { "description": "Current user reports" } }
+      }
+    },
+    "/api:sanos-y-salvos-reports/search": {
+      "get": {
+        "summary": "Search reports near a location",
+        "tags": ["Reports"],
+        "responses": { "200": { "description": "Search results" } }
+      }
+    },
+    "/api:sanos-y-salvos-reports/update/{id}": {
+      "put": {
+        "summary": "Update a report",
+        "tags": ["Reports"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Updated report" } }
+      }
+    },
+    "/api:sanos-y-salvos-matches/accept/{id}": {
+      "put": {
+        "summary": "Accept a match",
+        "tags": ["Matches"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Match accepted" } }
+      }
+    },
+    "/api:sanos-y-salvos-matches/details/{id}": {
+      "get": {
+        "summary": "Get match details",
+        "tags": ["Matches"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Match details" } }
+      }
+    },
+    "/api:sanos-y-salvos-matches/list": {
+      "get": {
+        "summary": "List all matches",
+        "tags": ["Matches"],
+        "responses": { "200": { "description": "Matches list" } }
+      }
+    },
+    "/api:sanos-y-salvos-matches/my_matches": {
+      "get": {
+        "summary": "List matches for the current user",
+        "tags": ["Matches"],
+        "responses": { "200": { "description": "Current user matches" } }
+      }
+    },
+    "/api:sanos-y-salvos-matches/pending": {
+      "get": {
+        "summary": "Get matches not yet notified",
+        "tags": ["Matches"],
+        "responses": { "200": { "description": "Pending matches" } }
+      }
+    },
+    "/api:sanos-y-salvos-matches/reject/{id}": {
+      "put": {
+        "summary": "Reject a match",
+        "tags": ["Matches"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Match rejected" } }
+      }
+    },
+    "/api:sanos-y-salvos-collaborators/create": {
+      "post": {
+        "summary": "Create a new collaborator",
+        "tags": ["Collaborators"],
+        "responses": { "200": { "description": "Created collaborator" } }
+      }
+    },
+    "/api:sanos-y-salvos-collaborators/delete/{id}": {
+      "delete": {
+        "summary": "Delete a collaborator",
+        "tags": ["Collaborators"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Deleted collaborator" } }
+      }
+    },
+    "/api:sanos-y-salvos-collaborators/details/{id}": {
+      "get": {
+        "summary": "Get collaborator details",
+        "tags": ["Collaborators"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Collaborator details" } }
+      }
+    },
+    "/api:sanos-y-salvos-collaborators/list": {
+      "get": {
+        "summary": "List all collaborators",
+        "tags": ["Collaborators"],
+        "responses": { "200": { "description": "Collaborators list" } }
+      }
+    },
+    "/api:sanos-y-salvos-collaborators/list_by_type": {
+      "get": {
+        "summary": "List collaborators by type",
+        "tags": ["Collaborators"],
+        "parameters": [
+          {
+            "name": "collaboratorType",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "enum": ["VETERINARY_CLINIC", "SHELTER", "MUNICIPALITY"] }
+          }
+        ],
+        "responses": { "200": { "description": "Collaborators filtered by type" } }
+      }
+    },
+    "/api:sanos-y-salvos-collaborators/update/{id}": {
+      "put": {
+        "summary": "Update a collaborator",
+        "tags": ["Collaborators"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Updated collaborator" } }
+      }
+    },
+    "/api:sanos-y-salvos-webhooks/match-notification": {
+      "post": {
+        "summary": "Webhook for match notifications",
+        "tags": ["Webhooks"],
+        "responses": { "200": { "description": "Webhook processed" } }
+      }
+    }
+  }
+}
