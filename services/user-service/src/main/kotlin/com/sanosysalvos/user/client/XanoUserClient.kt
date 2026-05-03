@@ -23,15 +23,18 @@ class XanoUserClient(
 ) {
     
     fun register(request: UserRegistrationRequest): AuthResponse {
+        if (request.role == UserRole.COLLABORATOR && request.collaboratorType == null) {
+            error("collaboratorType is required when role is COLLABORATOR")
+        }
+
         val url = "$baseUrl/api:sanos-y-salvos-auth/register"
-        val generatedId = generateUserId()
-        val payload = mapOf(
-            "id" to generatedId,
-            "fullName" to request.fullName,
-            "email" to request.email,
-            "phone" to request.phone,
-            "password" to request.password,
-        )
+        val payload = mutableMapOf<String, Any?>()
+        payload["fullName"] = request.fullName
+        payload["email"] = request.email
+        payload["phone"] = request.phone
+        payload["password"] = request.password
+        request.role?.let { payload["role"] = it.name }
+        request.collaboratorType?.let { payload["collaboratorType"] = it.name }
         val response = restTemplate.postForObject<Map<String, Any>>(url, payload)
         return parseAuthResponse(response)
     }
@@ -115,24 +118,10 @@ class XanoUserClient(
     private fun parseAuthResponse(response: Map<String, Any>?): AuthResponse {
         val data = (response?.get("data") as? Map<String, Any>) ?: response ?: emptyMap()
         return AuthResponse(
-            userId = data["userId"]?.toString() ?: data["id"]?.toString() ?: "",
+            userId = data["userId"]?.toString() ?: data["uid"]?.toString() ?: data["id"]?.toString() ?: "",
             role = UserRole.valueOf((data["role"]?.toString() ?: "USER").uppercase()),
             token = data["token"]?.toString() ?: "",
         )
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun generateUserId(): String {
-        return try {
-            val url = "$baseUrl/api:sanos-y-salvos-users/list"
-            val response = restTemplate.exchange(url, HttpMethod.GET, HttpEntity<Void>(HttpHeaders()), List::class.java).body
-            val ids = (response as? List<Map<String, Any>>)
-                ?.map { it["id"]?.toString() }
-                ?: emptyList()
-            PrefixedIdGenerator.next("U", ids)
-        } catch (_: Exception) {
-            PrefixedIdGenerator.next("U")
-        }
     }
 
     @Suppress("UNCHECKED_CAST")

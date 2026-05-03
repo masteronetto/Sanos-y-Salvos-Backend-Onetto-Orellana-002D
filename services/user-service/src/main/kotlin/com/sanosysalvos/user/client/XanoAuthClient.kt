@@ -9,12 +9,11 @@ import com.sanosysalvos.common.PrefixedIdGenerator
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
-import java.util.UUID
 
 @Component
 class XanoAuthClient(
     restClientBuilder: RestClient.Builder,
-    xanoAuthClientProperties: XanoAuthClientProperties,
+    private val xanoAuthClientProperties: XanoAuthClientProperties,
 ) {
     private val restClient = restClientBuilder
         .baseUrl(xanoAuthClientProperties.baseUrl)
@@ -32,14 +31,18 @@ class XanoAuthClient(
     }
 
     fun register(request: UserRegistrationRequest): AuthResponse {
-        val generatedId = generateUserId()
-        val xanoRequest = mapOf(
-            "uid" to generatedId,
-            "fullName" to request.fullName,
-            "email" to request.email,
-            "phone" to request.phone,
-            "password" to request.password,
-        )
+        if (request.role == UserRole.COLLABORATOR && request.collaboratorType == null) {
+            error("collaboratorType is required when role is COLLABORATOR")
+        }
+
+        val xanoRequest = mutableMapOf<String, Any?>()
+        xanoRequest["fullName"] = request.fullName
+        xanoRequest["email"] = request.email
+        xanoRequest["phone"] = request.phone
+        xanoRequest["password"] = request.password
+        // Send role only if provided. Xano will default to USER if absent.
+        request.role?.let { xanoRequest["role"] = it.name }
+        request.collaboratorType?.let { xanoRequest["collaboratorType"] = it.name }
 
         val response = restClient.post()
             .uri("/register")
@@ -48,7 +51,7 @@ class XanoAuthClient(
             .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
             ?: error("Xano register response was empty")
 
-        return mapToAuthResponse(response, generatedId)
+        return mapToAuthResponse(response)
     }
 
     fun logout(token: String): Boolean {
@@ -85,19 +88,32 @@ class XanoAuthClient(
     }
 
     private fun mapToAuthResponse(response: Map<String, Any>, fallbackId: String? = null): AuthResponse {
+        // Xano may return { data: { uid, role, token }, message: ... } or flat { uid, role, token }
+        val data = response["data"] as? Map<*, *>
+
+        val userId = (data?.get("uid") as? String)
+            ?: (data?.get("id") as? String)
+            ?: (data?.get("userId") as? String)
+            ?: (response["id"] as? String)
+            ?: (response["uid"] as? String)
+            ?: (response["userId"] as? String)
+            ?: (response["user_id"] as? String)
+            ?: fallbackId
+            ?: PrefixedIdGenerator.next("U")
+
+        val roleString = (data?.get("role") as? String) ?: (response["role"] as? String)
+
+        val token = (data?.get("token") as? String)
+            ?: (response["token"] as? String)
+            ?: (response["auth_token"] as? String)
+            ?: error("No token found in Xano response")
+
         return AuthResponse(
-            userId = (response["id"] as? String)
-                ?: (response["user_id"] as? String)
-                ?: fallbackId
-                ?: PrefixedIdGenerator.next("U"),
-            role = parseUserRole(response["role"] as? String),
-            token = response["token"] as? String
-                ?: response["auth_token"] as? String
-                ?: error("No token found in Xano response"),
+            userId = userId,
+            role = parseUserRole(roleString),
+            token = token,
         )
     }
-
-    private fun generateUserId(): String = PrefixedIdGenerator.next("U")
 
     private fun parseUserRole(roleString: String?): UserRole {
         return when (roleString?.uppercase()) {

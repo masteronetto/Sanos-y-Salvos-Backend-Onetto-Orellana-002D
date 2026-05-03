@@ -11,6 +11,8 @@ data class UserRegistrationRequest(
     val email: String,
     val phone: String? = null,
     val password: String,
+    val role: UserRole? = null,
+    val collaboratorType: CollaboratorType? = null,
 )
 
 data class UserLoginRequest(
